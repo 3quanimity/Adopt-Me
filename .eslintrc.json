@@ -2,14 +2,13 @@
   "extends": [
     "eslint:recommended",
     "plugin:import/errors",
-    "plugin:react/recommended", // might delete this later on
+    "plugin:react/recommended",
     "plugin:jsx-a11y/recommended",
-    // prettier have to come at the end !
     "prettier",
     "prettier/react"
   ],
   "rules": {
-    "react/prop-types": 0, // will be using typescript instead for type checking
+    "react/prop-types": 0,
     "no-console": "warn",
     "react-hooks/rules-of-hooks": 2,
     "react-hooks/exhaustive-deps": 1
