@@ -4,11 +4,11 @@ import useDropdown from "./useDropdown";
 import Results from "./Results";
 
 const SearchParams = () => {
-  const [location, updateLocation] = useState("Seattle, WA");
-  const [breeds, updateBreeds] = useState([]);
+  const [location, setLocation] = useState("Seattle, WA");
+  const [breeds, setBreeds] = useState([]);
   const [pets, setPets] = useState([]);
   const [animal, AnimalDropdown] = useDropdown("Animal", "dog", ANIMALS);
-  const [breed, BreedDropdown, updateBreed] = useDropdown("Breed", "", breeds);
+  const [breed, BreedDropdown, setBreed] = useDropdown("Breed", "", breeds);
 
   async function requestPets() {
     const { animals } = await pet.animals({
@@ -17,20 +17,18 @@ const SearchParams = () => {
       type: animal,
     });
 
-    console.log("animals", animals);
-
     setPets(animals || []);
   }
 
   useEffect(() => {
-    updateBreeds([]);
-    updateBreed("");
+    setBreeds([]);
+    setBreed("");
 
     pet.breeds(animal).then(({ breeds }) => {
       const breedStrings = breeds.map(({ name }) => name);
-      updateBreeds(breedStrings);
+      setBreeds(breedStrings);
     }, console.error);
-  }, [animal]);
+  }, [animal, setBreed]);
 
   return (
     <div className="search-params">
@@ -46,7 +44,7 @@ const SearchParams = () => {
             id="location"
             value={location}
             placeholder="Location"
-            onChange={(e) => updateLocation(e.target.value)}
+            onChange={(e) => setLocation(e.target.value)}
           />
         </label>
         <AnimalDropdown />
