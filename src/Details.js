@@ -1,5 +1,7 @@
 import React from "react";
 import pet from "@frontendmasters/pet";
+import { navigate } from "@reach/router";
+import Modal from "./Modal";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundry";
 import ThemeContext from "./ThemeContext";
@@ -15,13 +17,14 @@ class Details extends React.Component {
   //   }
 
   // experimental feature
-  state = { loading: true };
+  state = { loading: true, showModal: false };
 
   componentDidMount() {
     // Test redirecting if error in Details
     // throw new Error("lol");
     pet.animal(this.props.id).then(({ animal }) => {
       this.setState({
+        url: animal.url,
         name: animal.name,
         animal: animal.type,
         location: `${animal.contact.address.city}, ${animal.contact.address.state}`,
@@ -33,12 +36,23 @@ class Details extends React.Component {
     }, console.error);
   }
 
+  toggleModal = () => this.setState({ showModal: !this.state.showModal });
+  adopt = () => navigate(this.state.url);
+
   render() {
     if (this.state.loading) {
       return <h1>loading...</h1>;
     }
 
-    const { animal, breed, location, description, name, media } = this.state;
+    const {
+      animal,
+      breed,
+      location,
+      description,
+      name,
+      media,
+      showModal,
+    } = this.state;
 
     return (
       <div className="details">
@@ -49,11 +63,30 @@ class Details extends React.Component {
 
           <ThemeContext.Consumer>
             {([theme]) => (
-              <button style={{ backgroundColor: theme }}>Adopt {name}</button>
+              <button
+                onClick={this.toggleModal}
+                style={{ backgroundColor: theme }}
+              >
+                Adopt {name}
+              </button>
             )}
           </ThemeContext.Consumer>
 
           <p>{description}</p>
+          {showModal ? (
+            <Modal>
+              <div>
+                <h1>Would you like to adopt {name}?</h1>
+                <div className="buttons">
+                  <button onClick={this.adopt}>Yes</button>
+                  <button onClick={this.toggleModal}>
+                    {/* eslint-disable-next-line react/no-unescaped-entities */}
+                    No, I'm a monster!
+                  </button>
+                </div>
+              </div>
+            </Modal>
+          ) : null}
         </div>
       </div>
     );
